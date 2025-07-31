@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				sheet: {
+					background: 'hsl(var(--sheet-background))',
+					border: 'hsl(var(--sheet-border))',
+					header: 'hsl(var(--sheet-header))',
+					cell: 'hsl(var(--sheet-cell))',
+					'cell-selected': 'hsl(var(--sheet-cell-selected))',
+					'cell-editing': 'hsl(var(--sheet-cell-editing))',
+					grid: 'hsl(var(--sheet-grid))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
