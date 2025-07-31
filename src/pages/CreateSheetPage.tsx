@@ -43,7 +43,7 @@ const CreateSheetPage = () => {
         description: `Sheet "${sheet.name}" created successfully`
       });
       
-      navigate(`/sheet/${sheet.id}`);
+      navigate(`/spreadsheet/${sheet.id}`);
     } catch (error: any) {
       console.error('Failed to create sheet:', error);
       toast({

@@ -30,7 +30,7 @@ const App = () => (
               <CreateSheetPage />
             </ProtectedRoute>
           } />
-          <Route path="/sheet/:sheetId" element={
+          <Route path="/spreadsheet/:sheetId" element={
             <ProtectedRoute>
               <SpreadsheetPage />
             </ProtectedRoute>
