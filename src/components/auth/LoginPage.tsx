@@ -42,6 +42,26 @@ const LoginPage = () => {
     }
   };
 
+  const handleTestLogin = async () => {
+    setIsLoading(true);
+    try {
+      await authApi.login('test-token');
+      toast({
+        title: "Success",
+        description: "Logged in with test token"
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Test login failed",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/50 p-4">
       <Card className="w-full max-w-md">
@@ -76,6 +96,21 @@ const LoginPage = () => {
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
+          
+          <div className="mt-6 pt-6 border-t">
+            <div className="text-center mb-4">
+              <h3 className="text-sm font-medium text-muted-foreground">Development Mode (Test Token)</h3>
+              <p className="text-xs text-muted-foreground mt-1">Use this for testing without a real token</p>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleTestLogin}
+              disabled={isLoading}
+            >
+              Login with Test Token
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

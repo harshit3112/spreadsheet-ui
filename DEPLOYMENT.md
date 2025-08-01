@@ -83,6 +83,7 @@ Authorization: Bearer <token>
 
 {
   "name": "Sheet Name",
+  "userId": 1,
   "rowCount": 100,
   "columnCount": 26
 }

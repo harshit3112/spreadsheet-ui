@@ -38,8 +38,8 @@ export const generateEmptyGrid = (rows: number, columns: number) => {
   for (let row = 0; row < rows; row++) {
     const rowData: Record<string, any> = { id: row };
     for (let col = 0; col < columns; col++) {
-      const cellRef = getCellRef(row, col);
-      rowData[cellRef] = '';
+      const colLetter = columnToLetter(col);
+      rowData[colLetter] = '';
     }
     grid.push(rowData);
   }
@@ -61,11 +61,9 @@ export const createColumns = (columnCount: number) => {
       sortable: false,
       editable: true,
       renderCell: ({ row }: any) => {
-        const cellKey = getCellRef(row.id, i);
         return row[key] || '';
       },
       renderEditCell: ({ row, onRowChange }: any) => {
-        const cellKey = getCellRef(row.id, i);
         return (
           <input
             className="w-full h-full px-2 border-0 outline-none bg-sheet-cell-editing"

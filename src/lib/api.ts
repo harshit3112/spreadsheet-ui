@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8086';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -38,6 +38,7 @@ export interface Cell {
 }
 
 export interface Sheet {
+  data: number;
   id: string;
   name: string;
   cells: Cell[];
@@ -49,6 +50,7 @@ export interface Sheet {
 
 export interface CreateSheetRequest {
   name: string;
+  userId: string;
   rowCount?: number;
   columnCount?: number;
 }

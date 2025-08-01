@@ -34,6 +34,7 @@ const CreateSheetPage = () => {
     try {
       const sheet = await sheetsApi.createSheet({
         name: formData.name.trim(),
+        userId: "1",
         rowCount: formData.rowCount,
         columnCount: formData.columnCount
       });
@@ -43,7 +44,7 @@ const CreateSheetPage = () => {
         description: `Sheet "${sheet.name}" created successfully`
       });
       
-      navigate(`/spreadsheet/${sheet.id}`);
+      navigate(`/spreadsheet/${sheet.data}`);
     } catch (error: any) {
       console.error('Failed to create sheet:', error);
       toast({
