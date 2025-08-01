@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { DataGrid, Column, RenderEditCellProps } from 'react-data-grid';
-import 'react-data-grid/lib/styles.css';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -22,16 +20,49 @@ interface GridRow {
   [key: string]: any;
 }
 
+interface Column {
+  key: string;
+  name: string;
+  width: number;
+  resizable: boolean;
+  sortable: boolean;
+  editable: boolean;
+  renderCell: (props: any) => React.ReactNode;
+  renderEditCell?: (props: any) => React.ReactNode;
+}
+
 const SpreadsheetGrid = ({ sheet, onSheetUpdate }: SpreadsheetGridProps) => {
   const [rows, setRows] = useState<GridRow[]>([]);
-  const [columns, setColumns] = useState<Column<GridRow>[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
   const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
+  
+
 
   // Initialize grid data from sheet
   useEffect(() => {
     try {
       if (!sheet || !sheet.rowCount || !sheet.columnCount) {
+        // Create a fallback grid with default values
+        const fallbackGrid = generateEmptyGrid(10, 5);
+        const fallbackColumns = [
+          {
+            key: 'id',
+            name: '',
+            width: 50,
+            frozen: true,
+            resizable: false,
+            sortable: false,
+            renderCell: ({ row }) => (
+              <div className="flex items-center justify-center h-full bg-sheet-header text-muted-foreground text-sm font-medium">
+                {row.id + 1}
+              </div>
+            )
+          },
+          ...createColumns(5)
+        ];
+        setRows(fallbackGrid);
+        setColumns(fallbackColumns);
         return;
       }
 
@@ -73,7 +104,7 @@ const SpreadsheetGrid = ({ sheet, onSheetUpdate }: SpreadsheetGridProps) => {
     } catch (error) {
       console.error('Error initializing grid:', error);
     }
-  }, [sheet]);
+  }, [sheet?.id, sheet?.rowCount, sheet?.columnCount]);
 
   const handleCellChange = useCallback(async (updatedRows: GridRow[]) => {
     setRows(updatedRows);
@@ -156,7 +187,7 @@ const SpreadsheetGrid = ({ sheet, onSheetUpdate }: SpreadsheetGridProps) => {
         sortable: false,
         editable: true,
         renderCell: ({ row }) => row[newColLetter] || '',
-        renderEditCell: ({ row, onRowChange }: RenderEditCellProps<GridRow>) => (
+        renderEditCell: ({ row, onRowChange }: any) => (
           <input
             className="w-full h-full px-2 border-0 outline-none bg-sheet-cell-editing"
             value={row[newColLetter] || ''}
@@ -188,6 +219,7 @@ const SpreadsheetGrid = ({ sheet, onSheetUpdate }: SpreadsheetGridProps) => {
 
   return (
     <div className="flex flex-col h-full">
+
 
       {/* Toolbar */}
       <div className="flex items-center gap-2 p-4 border-b bg-sheet-header">
@@ -244,32 +276,46 @@ const SpreadsheetGrid = ({ sheet, onSheetUpdate }: SpreadsheetGridProps) => {
 
       {/* Spreadsheet Grid */}
       <div className="flex-1 overflow-auto">
+        
         {rows.length > 0 && columns.length > 0 ? (
-          <div className="h-full">
-            <DataGrid
-              columns={columns}
-              rows={rows}
-              onRowsChange={handleCellChange}
-              className="h-full w-full"
-              style={{
-                '--rdg-color': 'hsl(var(--foreground))',
-                '--rdg-border-color': 'hsl(var(--sheet-border))',
-                '--rdg-summary-border-color': 'hsl(var(--sheet-border))',
-                '--rdg-background-color': 'hsl(var(--sheet-background))',
-                '--rdg-header-background-color': 'hsl(var(--sheet-header))',
-                '--rdg-header-color': 'hsl(var(--foreground))',
-                '--rdg-row-hover-background-color': 'hsl(var(--muted))',
-                '--rdg-row-selected-background-color': 'hsl(var(--sheet-cell-selected))',
-                '--rdg-cell-frozen-background-color': 'hsl(var(--sheet-header))',
-              } as React.CSSProperties}
-              rowHeight={32}
-              headerRowHeight={32}
-              enableVirtualization
-            />
+          <div className="h-full overflow-auto">
+            {/* Simple HTML table for testing */}
+            <table className="w-full border-collapse border border-slate-300">
+              <thead>
+                <tr className="bg-slate-100">
+                  <th className="border border-slate-300 px-2 py-1 text-left">#</th>
+                  {columns.slice(1).map((col) => (
+                    <th key={col.key} className="border border-slate-300 px-2 py-1 text-left">
+                      {col.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, index) => (
+                  <tr key={row.id}>
+                    <td className="border border-slate-300 px-2 py-1 text-center bg-slate-50">
+                      {row.id + 1}
+                    </td>
+                    {columns.slice(1).map((col) => (
+                      <td key={col.key} className="border border-slate-300 px-2 py-1">
+                        {row[col.key] || ''}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
-            Loading grid... (Rows: {rows.length}, Columns: {columns.length})
+            <div>
+              Loading grid... (Rows: {rows.length}, Columns: {columns.length})
+              <br />
+              <div className="text-xs mt-2">
+                Sheet: {sheet?.name || 'No sheet'}, RowCount: {sheet?.rowCount || 0}, ColCount: {sheet?.columnCount || 0}
+              </div>
+            </div>
           </div>
         )}
       </div>

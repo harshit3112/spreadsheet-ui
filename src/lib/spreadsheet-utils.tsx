@@ -1,12 +1,8 @@
 import React from 'react';
 
 export const columnToLetter = (column: number): string => {
-  let result = '';
-  while (column >= 0) {
-    result = String.fromCharCode(65 + (column % 26)) + result;
-    column = Math.floor(column / 26) - 1;
-  }
-  return result;
+  // Simple implementation for A-Z (0-25)
+  return String.fromCharCode(65 + column);
 };
 
 export const letterToColumn = (letter: string): number => {

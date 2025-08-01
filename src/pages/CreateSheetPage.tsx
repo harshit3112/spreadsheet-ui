@@ -44,7 +44,9 @@ const CreateSheetPage = () => {
         description: `Sheet "${sheet.name}" created successfully`
       });
       
-      navigate(`/spreadsheet/${sheet.data}`);
+      // Use sheet.data if sheet.id is not available
+      const sheetId = sheet.id || sheet.data;
+      navigate(`/spreadsheet/${sheetId}`);
     } catch (error: any) {
       console.error('Failed to create sheet:', error);
       toast({
